@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Patients - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h2>Manage Patients</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="GET" action="{{ url_for('admin.patients') }}" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Search by name, ID, or contact" value="{{ search }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Patients Table -->
+    <div class="card">
+        <div class="card-body">
+            {% if patients %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>P{{ '%02d' % patient.id }}</td>
+                            <td>{{ patient.name }}</td>
+                            <td>{{ patient.username }}</td>
+                            <td>{{ patient.contact_num if patient.contact_num else 'N/A' }}</td>
+                            <td>{{ patient.user_addr if patient.user_addr else 'N/A' }}</td>
+                            <td>
+                                <button type="button" 
+                                        class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deletePatientModal{{ patient.id }}">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Delete Patient Confirmation Modal -->
+                        <div class="modal fade" id="deletePatientModal{{ patient.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to remove this patient?</p>
+                                        <p class="mb-0"><strong>{{ patient.name }}</strong></p>
+                                        <p class="mb-0 text-muted">Contact: {{ patient.contact_num if patient.contact_num else 'N/A' }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form method="POST" action="{{ url_for('admin.delete_patient', id=patient.id) }}" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger">Remove Patient</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-muted">No patients found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

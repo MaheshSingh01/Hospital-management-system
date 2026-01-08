@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Availability - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Manage Availability</h2>
+            <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Add Availability</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('doctor.update_availability') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <select class="form-select" name="date" required>
+                                <option value="">Select date</option>
+                                {% for day in next_7_days %}
+                                <option value="{{ day.strftime('%Y-%m-%d') }}">
+                                    {{ day.strftime('%A, %B %d') }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Start Time</label>
+                            <select class="form-select" name="start_time" required>
+                                <option value="">Select time</option>
+                                <option value="09:00">09:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">01:00 PM</option>
+                                <option value="14:00">02:00 PM</option>
+                                <option value="15:00">03:00 PM</option>
+                                <option value="16:00">04:00 PM</option>
+                                <option value="17:00">05:00 PM</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">End Time</label>
+                            <select class="form-select" name="end_time" required>
+                                <option value="">Select time</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">01:00 PM</option>
+                                <option value="14:00">02:00 PM</option>
+                                <option value="15:00">03:00 PM</option>
+                                <option value="16:00">04:00 PM</option>
+                                <option value="17:00">05:00 PM</option>
+                                <option value="18:00">06:00 PM</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Add Slot</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Next 7 Days Schedule</h5>
+                </div>
+                <div class="card-body">
+                    {% for day in next_7_days %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <h6>{{ day.strftime('%A, %B %d, %Y') }}</h6>
+                        {% if availability_data[day] %}
+                            <div class="row">
+                                {% for slot in availability_data[day] %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="alert alert-success mb-0 d-flex justify-content-between align-items-center">
+                                        <span>{{ slot.start_time }} - {{ slot.end_time }}</span>
+                                        <form method="POST" action="{{ url_for('doctor.delete_availability', id=slot.id) }}" 
+                                              style="display:inline;"
+                                              onsubmit="return confirm('Remove this slot?');">
+                                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">No availability set</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>My Profile</h2>
+            <a href="{{ url_for('patient.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Update Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('patient.update_profile') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="name" 
+                                   value="{{ patient.name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" 
+                                   value="{{ patient.username }}" disabled>
+                            <small class="text-muted">Username cannot be changed</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" name="contact_num" 
+                                   value="{{ patient.contact_num if patient.contact_num else '' }}"
+                                   placeholder="Enter contact number">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" name="user_addr" rows="3" 
+                                      placeholder="Enter address">{{ patient.user_addr if patient.user_addr else '' }}</textarea>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6 class="mb-3">Change Password (Optional)</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control" name="new_password" 
+                                   placeholder="Leave blank to keep current password">
+                            <small class="text-muted">Only fill if you want to change password</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

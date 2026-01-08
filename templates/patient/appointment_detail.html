@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Appointment Details - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Appointment Details</h2>
+            <a href="{{ url_for('patient.appointments') }}" class="btn btn-secondary">Back to Appointments</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Appointment Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Doctor:</strong></div>
+                        <div class="col-md-8">Dr. {{ appointment.doctor.name }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Specialization:</strong></div>
+                        <div class="col-md-8">{{ appointment.doctor.department.name if appointment.doctor.department else 'General' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Date:</strong></div>
+                        <div class="col-md-8">{{ appointment.date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Time:</strong></div>
+                        <div class="col-md-8">{{ appointment.appt_time }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Status:</strong></div>
+                        <div class="col-md-8">
+                            <span class="badge bg-{{ 'success' if appointment.curr_status == 'Completed' else 'primary' if appointment.curr_status == 'Booked' else 'danger' }}">
+                                {{ appointment.curr_status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if appointment.curr_status == 'Booked' and can_reschedule %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('patient.reschedule_form', id=appointment.id) }}" 
+                       class="btn btn-warning w-100 mb-2">Reschedule Appointment</a>
+                    
+                    <button type="button" 
+                            class="btn btn-danger w-100" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#cancelAppointmentModal">
+                        Cancel Appointment
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Cancel Appointment Confirmation Modal -->
+            <div class="modal fade" id="cancelAppointmentModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Cancellation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to cancel this appointment?</p>
+                            <div class="mb-2"><strong>Doctor:</strong> Dr. {{ appointment.doctor.name }}</div>
+                            <div class="mb-2"><strong>Date:</strong> {{ appointment.date.strftime('%B %d, %Y') }}</div>
+                            <div class="mb-0"><strong>Time:</strong> {{ appointment.appt_time }}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Appointment</button>
+                            <form method="POST" action="{{ url_for('patient.cancel_appointment', id=appointment.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Cancel Appointment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {% if appointment.curr_status == 'Completed' and treatment %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Treatment Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Diagnosis:</strong>
+                        <p class="mt-1">{{ treatment.diagnosis }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Prescription:</strong>
+                        <p class="mt-1">{{ treatment.prescription }}</p>
+                    </div>
+                    
+                    {% if treatment.medical_notes %}
+                    <div class="mb-3">
+                        <strong>Medical Notes:</strong>
+                        <p class="mt-1">{{ treatment.medical_notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% elif appointment.curr_status == 'Booked' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Status</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Your appointment is confirmed. Please arrive 10 minutes before your scheduled time.</p>
+                </div>
+            </div>
+            {% elif appointment.curr_status == 'Cancelled' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Status</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">This appointment has been cancelled.</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Treatment Details</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Treatment details will be available after the appointment is completed.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

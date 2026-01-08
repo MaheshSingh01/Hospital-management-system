@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dr. {{ doctor.name }} - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Dr. {{ doctor.name }}</h2>
+            <a href="{{ url_for('patient.doctors') }}" class="btn btn-secondary">Back to Doctors</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Doctor Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> Dr. {{ doctor.name }}</p>
+                    <p><strong>Specialization:</strong> {{ doctor.department.name if doctor.department else 'General' }}</p>
+                    <p><strong>Contact:</strong> {{ doctor.contact_num if doctor.contact_num else 'N/A' }}</p>
+                    {% if doctor.department and doctor.department.description %}
+                    <p class="text-muted small">{{ doctor.department.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Book Appointment</h5>
+                </div>
+                <div class="card-body">
+                    {% if availability %}
+                        <form method="POST" action="{{ url_for('patient.book_appointment', doctor_id=doctor.id) }}">
+                            <div class="mb-3">
+                                <label class="form-label">Select Date</label>
+                                <select class="form-select" name="date" id="dateSelect" required>
+                                    <option value="">Choose a date</option>
+                                    {% for day in next_7_days %}
+                                        {% if day in availability %}
+                                        <option value="{{ day.strftime('%Y-%m-%d') }}">
+                                            {{ day.strftime('%A, %B %d, %Y') }}
+                                        </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Select Time</label>
+                                <select class="form-select" name="time" id="timeSelect" required>
+                                    <option value="">Choose a time</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Book Appointment</button>
+                        </form>
+                        
+                        <script>
+                            const availability = {
+                                {% for day, slots in availability.items() %}
+                                "{{ day.strftime('%Y-%m-%d') }}": [
+                                    {% for slot in slots %}
+                                    "{{ slot.start_time }}"{% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                ],
+                                {% endfor %}
+                            };
+                            
+                            document.getElementById('dateSelect').addEventListener('change', function() {
+                                const selectedDate = this.value;
+                                const timeSelect = document.getElementById('timeSelect');
+                                
+                                timeSelect.innerHTML = '<option value="">Choose a time</option>';
+                                
+                                if (selectedDate && availability[selectedDate]) {
+                                    availability[selectedDate].forEach(time => {
+                                        const option = document.createElement('option');
+                                        option.value = time;
+                                        option.textContent = time;
+                                        timeSelect.appendChild(option);
+                                    });
+                                }
+                            });
+                        </script>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No available slots in the next 7 days. Please check back later.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if availability %}
+            <div class="card mt-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Available Slots</h5>
+                </div>
+                <div class="card-body">
+                    {% for day in next_7_days %}
+                        {% if day in availability %}
+                        <div class="mb-3">
+                            <strong>{{ day.strftime('%A, %B %d') }}</strong>
+                            <div class="mt-2">
+                                {% for slot in availability[day] %}
+                                <span class="badge bg-success me-1 mb-1">{{ slot.start_time }} - {{ slot.end_time }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

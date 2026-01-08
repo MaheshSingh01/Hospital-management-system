@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Admin Dashboard</h2>
+            <p class="text-muted">Welcome, {{ session.name }}</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Doctors</h5>
+                    <h2 class="mb-0">{{ total_doctors }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Patients</h5>
+                    <h2 class="mb-0">{{ total_patients }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Total Appointments</h5>
+                    <h2 class="mb-0">{{ total_appointments }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Manage Doctors</h5>
+                </div>
+                <div class="card-body">
+                    <p>Add, edit, or remove doctor profiles</p>
+                    <a href="{{ url_for('admin.doctors') }}" class="btn btn-primary">View Doctors</a>
+                    <a href="{{ url_for('admin.add_doctor') }}" class="btn btn-success">Add Doctor</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Manage Patients</h5>
+                </div>
+                <div class="card-body">
+                    <p>View and manage patient records</p>
+                    <a href="{{ url_for('admin.patients') }}" class="btn btn-primary">View Patients</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Appointments</h5>
+                </div>
+                <div class="card-body">
+                    <p>View all appointments in the system</p>
+                    <a href="{{ url_for('admin.appointments') }}" class="btn btn-primary">View Appointments</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

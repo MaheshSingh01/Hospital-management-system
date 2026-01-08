@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Doctor - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Doctor Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin.edit_doctor', id=doctor.id) }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ doctor.name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" value="{{ doctor.username }}" disabled>
+                            <small class="text-muted">Username cannot be changed</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="department_id" class="form-label">Specialization</label>
+                            <select class="form-control" id="department_id" name="department_id">
+                                <option value="">Select Specialization</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}" 
+                                        {% if doctor.department_id == dept.id %}selected{% endif %}>
+                                    {{ dept.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" id="contact" name="contact" 
+                                   value="{{ doctor.contact_num if doctor.contact_num else '' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="2">{{ doctor.user_addr if doctor.user_addr else '' }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Update Doctor</button>
+                    </form>
+                    
+                    <hr>
+                    
+                    <a href="{{ url_for('admin.doctors') }}" class="btn btn-secondary w-100">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

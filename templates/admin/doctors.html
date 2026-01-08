@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Doctors - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h2>Manage Doctors</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{{ url_for('admin.add_doctor') }}" class="btn btn-success">Add Doctor</a>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="GET" action="{{ url_for('admin.doctors') }}" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Search by name or specialization" value="{{ search }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Doctors Table -->
+    <div class="card">
+        <div class="card-body">
+            {% if doctors %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Specialization</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in doctors %}
+                        <tr>
+                            <td>DR{{ '%02d' % doctor.id }}</td>
+                            <td>{{ doctor.name }}</td>
+                            <td>{{ doctor.username }}</td>
+                            <td>{{ doctor.department.name if doctor.department else 'Not assigned' }}</td>
+                            <td>{{ doctor.contact_num if doctor.contact_num else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_doctor', id=doctor.id) }}" 
+                                   class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{{ url_for('admin.doctor_availability', id=doctor.id) }}" 
+                                   class="btn btn-sm btn-info">Availability</a>
+                                <button type="button" 
+                                        class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteDoctorModal{{ doctor.id }}">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Delete Doctor Confirmation Modal -->
+                        <div class="modal fade" id="deleteDoctorModal{{ doctor.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to remove this doctor?</p>
+                                        <p class="mb-0"><strong>Dr. {{ doctor.name }}</strong></p>
+                                        <p class="mb-0 text-muted">{{ doctor.department.name if doctor.department else 'No specialization' }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form method="POST" action="{{ url_for('admin.delete_doctor', id=doctor.id) }}" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger">Remove Doctor</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-muted">No doctors found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

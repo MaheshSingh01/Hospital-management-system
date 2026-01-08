@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Appointment Details - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Appointment Details</h2>
+            <a href="{{ url_for('doctor.appointments') }}" class="btn btn-secondary">Back to Appointments</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Appointment Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Patient:</strong></div>
+                        <div class="col-md-8">{{ appointment.patient.name }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Date:</strong></div>
+                        <div class="col-md-8">{{ appointment.date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Time:</strong></div>
+                        <div class="col-md-8">{{ appointment.appt_time }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Status:</strong></div>
+                        <div class="col-md-8">
+                            <span class="badge bg-{{ 'success' if appointment.curr_status == 'Completed' else 'primary' if appointment.curr_status == 'Booked' else 'danger' }}">
+                                {{ appointment.curr_status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if appointment.curr_status == 'Booked' %}
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Complete Appointment</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('doctor.update_appointment', id=appointment.id) }}">
+                        <input type="hidden" name="action" value="complete">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Diagnosis</label>
+                            <textarea class="form-control" name="diagnosis" rows="3" required>{{ treatment.diagnosis if treatment else '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Prescription</label>
+                            <textarea class="form-control" name="prescription" rows="3" required>{{ treatment.prescription if treatment else '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Medical Notes</label>
+                            <textarea class="form-control" name="notes" rows="2">{{ treatment.medical_notes if treatment else '' }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">Mark as Completed</button>
+                    </form>
+                    
+                    <form method="POST" action="{{ url_for('doctor.update_appointment', id=appointment.id) }}" 
+                          class="mt-2" style="display:inline;"
+                          onsubmit="return confirm('Cancel this appointment?');">
+                        <input type="hidden" name="action" value="cancel">
+                        <button type="submit" class="btn btn-danger">Cancel Appointment</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Treatment Details</h5>
+                </div>
+                <div class="card-body">
+                    {% if treatment %}
+                        <div class="mb-3">
+                            <strong>Diagnosis:</strong>
+                            <p>{{ treatment.diagnosis }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Prescription:</strong>
+                            <p>{{ treatment.prescription }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Notes:</strong>
+                            <p>{{ treatment.medical_notes if treatment.medical_notes else 'No notes' }}</p>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No treatment details available</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Patient History</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>{{ appointment.patient.name }}</strong></p>
+                    <p class="text-muted mb-3">Total visits: {{ patient_history|length }}</p>
+                    
+                    <div class="list-group">
+                        {% for past in patient_history[:5] %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <small>{{ past.date.strftime('%Y-%m-%d') }}</small>
+                                <span class="badge bg-{{ 'success' if past.curr_status == 'Completed' else 'secondary' }}">
+                                    {{ past.curr_status }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <a href="{{ url_for('doctor.patient_history', id=appointment.patient.id) }}" 
+                       class="btn btn-sm btn-primary mt-3">View Full History</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Find Doctors - Nivea Health Care{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Find Doctors</h2>
+            <a href="{{ url_for('patient.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('patient.doctors') }}">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <input type="text" class="form-control" name="search" 
+                               placeholder="Search by doctor name" 
+                               value="{{ search_query }}">
+                    </div>
+                    
+                    <div class="col-md-5 mb-2">
+                        <select class="form-select" name="department">
+                            <option value="">All Departments</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}" 
+                                    {% if dept_filter == dept.id|string %}selected{% endif %}>
+                                {{ dept.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2 mb-2">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if doctors %}
+            {% for doctor in doctors %}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Dr. {{ doctor.name }}</h5>
+                        <p class="mb-1">
+                            <strong>Specialization:</strong> 
+                            {{ doctor.department.name if doctor.department else 'General' }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Contact:</strong> 
+                            {{ doctor.contact_num if doctor.contact_num else 'N/A' }}
+                        </p>
+                        <a href="{{ url_for('patient.view_doctor', id=doctor.id) }}" 
+                           class="btn btn-primary btn-sm mt-2">View Profile & Book</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    No doctors found. Try different search criteria.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
