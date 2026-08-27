@@ -97,3 +97,20 @@ export default {
   }
 }
 </script>
+<script>
+import api from '../api'
+export default {
+  name: 'LoginPage',
+  data() {
+    return {
+      form: { username: '', password: '' },
+      errMsg: '',
+      loading: false,
+      features: [
+        { symbol: '✓', text: 'Easy appointment booking' },
+        { symbol: '✓', text: 'Connect with verified doctors' },
+        { symbol: '✓', text: 'Full treatment history' },
+        { symbol: '✓', text: 'Daily appointment reminders' },
+      ]
+    }
+  },
