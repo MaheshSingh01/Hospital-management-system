@@ -98,3 +98,91 @@ export default {
 }
 </script>
 
+<style scoped>
+.auth-screen { display: flex; min-height: 100vh; }
+
+/* ── Left Panel ── */
+.auth-left {
+  flex: 1;
+  background-image: url('../../public/healthcare1.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+}
+
+.overlay {
+  position: absolute; inset: 0;
+  background: rgba(10, 25, 47, 0.72);
+}
+
+.auth-left-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 40px;
+  padding: 60px 52px; width: 100%;
+}
+
+.brand-logo {
+  width: 64px; height: 64px; border-radius: 16px;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; padding: 10px;
+}
+.pulse-img { width: 40px; height: 40px; object-fit: contain; }
+
+.brand-name {
+  font-family: 'Times New Roman', Times, serif;
+  color: #fff; font-size: 34px; margin-bottom: 10px; line-height: 1.2;
+}
+.brand-tagline {
+  color: rgba(255,255,255,0.6);
+  font-size: 15px; max-width: 300px; line-height: 1.7;
+}
+
+.feature-list { display: flex; flex-direction: column; gap: 16px; }
+.feature-item {
+  display: flex; align-items: center; gap: 16px;
+  color: rgba(255,255,255,0.85); font-size: 15px;
+}
+.feature-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(61,165,217,0.35);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+
+.auth-left-footer {
+  color: rgba(255,255,255,0.3); font-size: 12px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px; margin-top: auto;
+}
+
+/* ── Right Panel ── */
+.auth-right {
+  width: 500px; background: #f8fafd;
+  display: flex; align-items: center; justify-content: center; padding: 48px 40px;
+}
+.auth-card { width: 100%; max-width: 400px; }
+
+.auth-card-header { text-align: center; margin-bottom: 32px; }
+.auth-logo-small {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; padding: 8px;
+}
+.pulse-img-sm { width: 32px; height: 32px; object-fit: contain; filter: brightness(0) invert(1); }
+
+.auth-title { font-size: 26px; margin-bottom: 6px; color: var(--navy); }
+.auth-sub { color: var(--muted); font-size: 14px; }
+
+.full-width { width: 100%; justify-content: center; padding: 13px; font-size: 15px; margin-top: 8px; }
+
+.auth-footer { text-align: center; margin-top: 24px; color: var(--muted); font-size: 14px; }
+
+@media (max-width: 768px) {
+  .auth-left { display: none; }
+  .auth-right { width: 100%; padding: 32px 24px; }
+}
+</style>
