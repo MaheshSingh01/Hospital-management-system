@@ -230,3 +230,24 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.filter-tabs { display: flex; gap: 8px; }
+.tab-btn {
+  padding: 8px 18px; border-radius: 20px; border: 1.5px solid #d4e0ec;
+  background: #fff; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted);
+  font-family: 'Outfit', sans-serif; transition: all .2s;
+}
+.tab-btn.active, .tab-btn:hover { border-color: var(--teal); background: var(--teal); color: #fff; }
+.action-btns { display: flex; gap: 6px; }
+.text-muted { color: var(--muted); font-size: 13px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+.modal-box h3 { margin-bottom: 4px; }
+.modal-sub { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.confirm-box { text-align: center; }
+.confirm-icon { font-size: 42px; margin-bottom: 12px; }
+.confirm-note { font-size: 12px; color: #e74c3c; margin-top: 6px; font-weight: 600; }
+textarea.form-control { resize: vertical; }
+</style>
