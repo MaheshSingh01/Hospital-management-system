@@ -120,3 +120,113 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'DoctorAppointments',
+  components: { Layout },
+  data() {
+    return {
+      appointments: [], view: 'all', loading: true,
+      showModal: false, showCancelModal: false,
+      activeAppt: null, saving: false, cancelling: false,
+      rescheduling: false,
+      rescheduleForm: { scheduled_date: '', scheduled_time: '' },
+      rescheduleErr: '',
+      today: new Date().toISOString().split('T')[0],
+      showRescheduleModal: false,
+      treatForm: { diagnosis_text: '', prescription_text: '', follow_up_notes: '', next_visit_date: '' },
+      successMsg: '', errMsg: '',
+      tabs: [{ val: 'all', label: 'All' }, { val: 'today', label: 'Today' }, { val: 'week', label: 'This Week' }],
+      navItems: [
+        { path: '/doctor/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/doctor/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/doctor/patients',     icon: 'fa-solid fa-users',         label: 'My Patients' },
+        { path: '/doctor/schedule',     icon: 'fa-solid fa-clock',         label: 'Schedule' },
+        { path: '/doctor/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  async created() { await this.load() },
+  methods: {
+    async load() {
+      this.loading = true
+      const { data } = await api.get('/doctor/appointments', { params: { view: this.view } })
+      this.appointments = data; this.loading = false
+    },
+    switchView(v) { this.view = v; this.load() },
+    openCompleteModal(appt) {
+      this.activeAppt = appt
+      const rec = appt.treatment
+      this.treatForm = {
+        diagnosis_text: rec?.diagnosis_text || '',
+        prescription_text: rec?.prescription_text || '',
+        follow_up_notes: rec?.follow_up_notes || '',
+        next_visit_date: rec?.next_visit_date || ''
+      }
+      this.showModal = true
+    },
+    openRescheduleModal(appt) {
+      this.activeAppt = appt
+      this.rescheduleForm = {
+        scheduled_date: appt.scheduled_date,
+        scheduled_time: appt.scheduled_time
+      }
+      this.rescheduleErr = ''
+      this.showRescheduleModal = true
+    },
+    async submitReschedule() {
+      if (!this.rescheduleForm.scheduled_date || !this.rescheduleForm.scheduled_time) {
+        this.rescheduleErr = 'Please select both date and time'
+        return
+      }
+      this.rescheduling = true
+      this.rescheduleErr = ''
+      try {
+        await api.post(`/doctor/appointments/${this.activeAppt.id}/reschedule`, this.rescheduleForm)
+        this.successMsg = 'Appointment rescheduled successfully'
+        this.showRescheduleModal = false
+        await this.load()
+        setTimeout(() => this.successMsg = '', 3000)
+      } catch (err) {
+        this.rescheduleErr = err.response?.data?.error || 'Failed to reschedule'
+      } finally { this.rescheduling = false }
+    },
+    openCancelModal(appt) {
+      this.activeAppt = appt
+      this.showCancelModal = true
+    },
+    async submitComplete() {
+      if (!this.treatForm.diagnosis_text || !this.treatForm.prescription_text) {
+        this.errMsg = 'Diagnosis and prescription are required'
+        return
+      }
+      this.saving = true
+      try {
+        await api.post(`/doctor/appointments/${this.activeAppt.id}/complete`, this.treatForm)
+        this.successMsg = 'Appointment completed and treatment saved'
+        this.showModal = false
+        await this.load()
+        setTimeout(() => this.successMsg = '', 3000)
+      } catch (err) {
+        this.errMsg = err.response?.data?.error || 'Failed to complete appointment'
+        setTimeout(() => this.errMsg = '', 3000)
+      } finally { this.saving = false }
+    },
+    async confirmCancel() {
+      this.cancelling = true
+      try {
+        await api.post(`/doctor/appointments/${this.activeAppt.id}/cancel`)
+        this.successMsg = 'Appointment cancelled successfully'
+        this.showCancelModal = false
+        await this.load()
+        setTimeout(() => this.successMsg = '', 3000)
+      } catch (err) {
+        this.errMsg = err.response?.data?.error || 'Failed to cancel'
+        setTimeout(() => this.errMsg = '', 3000)
+      } finally { this.cancelling = false }
+    }
+  }
+}
+</script>
