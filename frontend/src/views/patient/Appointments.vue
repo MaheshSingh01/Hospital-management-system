@@ -197,38 +197,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.page-header { margin-bottom: 20px; }
-.action-btns { display: flex; gap: 6px; }
-.text-muted { color: var(--muted); font-size: 13px; }
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(13,27,42,.5);
-  display: flex; align-items: center; justify-content: center; z-index: 999;
-}
-.modal-box {
-  background: #fff; border-radius: 12px; padding: 28px;
-  width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
-}
-.modal-box h3 { margin-bottom: 4px; }
-.modal-sub { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-.confirm-box { text-align: center; }
-.confirm-icon { font-size: 42px; margin-bottom: 12px; }
-.confirm-note {
-  font-size: 12px; color: #e74c3c; margin-top: 6px;
-  font-weight: 600;
-}
-.slot-label { font-size: 13px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 10px; }
-.slot-hint { font-weight: 400; color: var(--sky); text-transform: none; }
-.slots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 220px; overflow-y: auto; }
-.slot-card {
-  border: 1.5px solid #d4e0ec; border-radius: 8px; padding: 10px 14px;
-  cursor: pointer; transition: all .18s;
-}
-.slot-card:hover { border-color: var(--teal); background: #f0f9ff; }
-.slot-card.selected { border-color: var(--teal); background: var(--teal); color: #fff; }
-.slot-date { font-weight: 600; font-size: 13px; }
-.slot-time { font-size: 12px; margin-top: 2px; opacity: .8; }
-</style>
