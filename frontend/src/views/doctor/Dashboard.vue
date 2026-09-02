@@ -40,3 +40,27 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'DoctorDashboard',
+  components: { Layout },
+  data() {
+    return {
+      data: {}, loading: true,
+      navItems: [
+        { path: '/doctor/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/doctor/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/doctor/patients',     icon: 'fa-solid fa-users',         label: 'My Patients' },
+        { path: '/doctor/schedule',     icon: 'fa-solid fa-clock',         label: 'Schedule' },
+        { path: '/doctor/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  async created() {
+    const { data } = await api.get('/doctor/dashboard')
+    this.data = data; this.loading = false
+  }
+}
+</script>
