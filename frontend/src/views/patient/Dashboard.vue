@@ -69,3 +69,44 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'PatientDashboard',
+  components: { Layout },
+  data() {
+    return {
+      data: {}, loading: true,
+      navItems: [
+        { path: '/patient/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/patient/doctors',      icon: 'fa-solid fa-stethoscope',   label: 'Find Doctors' },
+        { path: '/patient/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/patient/history',      icon: 'fa-solid fa-clock-rotate-left', label: 'History' },
+        { path: '/patient/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  async created() {
+    const { data } = await api.get('/patient/dashboard')
+    this.data = data; this.loading = false
+  }
+}
+</script>
+
+<style scoped>
+.page-header { margin-bottom: 24px; }
+.page-sub { color: var(--muted); margin-top: 4px; }
+.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.dept-scroll { display: flex; flex-wrap: wrap; gap: 10px; }
+.dept-chip {
+  background: var(--light); color: var(--teal); padding: 10px 16px;
+  border-radius: 12px; font-size: 13px; font-weight: 500;
+  border: 1.5px solid #c7dff0;
+  display: flex; flex-direction: column; align-items: flex-start;
+  min-width: 140px;
+}
+.dept-name { font-weight: 600; font-size: 13px; }
+.dept-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.action-btns { display: flex; gap: 6px; }
+</style>
