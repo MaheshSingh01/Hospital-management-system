@@ -95,3 +95,92 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+/* eslint-disable */
+export default {
+  name: 'AdminDoctors',
+  components: { Layout },
+  data() {
+    return {
+      doctors: [], departments: [], searchKw: '',
+      loading: true, saving: false,
+      showModal: false, editMode: false, editId: null,
+      form: { full_name: '', username: '', password: '', dept_id: '', contact_num: '', email: '' },
+      errMsg: '', modalErr: '',
+      navItems: [
+        { path: '/admin/dashboard',    icon: 'fa-solid fa-gauge',          label: 'Dashboard' },
+        { path: '/admin/doctors',      icon: 'fa-solid fa-user-doctor',    label: 'Doctors' },
+        { path: '/admin/patients',     icon: 'fa-solid fa-users',          label: 'Patients' },
+        { path: '/admin/appointments', icon: 'fa-solid fa-calendar-check', label: 'Appointments' },
+        { path: '/admin/departments',  icon: 'fa-solid fa-building-columns',label: 'Departments' },
+      ]
+    }
+  },
+  async created() { await this.fetchDoctors(); await this.fetchDepts() },
+  methods: {
+    async fetchDoctors() {
+      this.loading = true
+      try {
+        const { data } = await api.get('/admin/doctors', { params: { search: this.searchKw } })
+        this.doctors = data
+      } catch { this.errMsg = 'Failed to load doctors' } finally { this.loading = false }
+    },
+    async fetchDepts() {
+      const { data } = await api.get('/admin/departments')
+      this.departments = data
+    },
+    openAddModal() {
+      this.editMode = false; this.editId = null
+      this.form = { full_name: '', username: '', password: '', dept_id: '', contact_num: '', email: '' }
+      this.modalErr = ''; this.showModal = true
+    },
+    openEditModal(doc) {
+      this.editMode = true; this.editId = doc.id
+      this.form = { full_name: doc.full_name, username: '', password: '', dept_id: doc.dept_id || '', contact_num: doc.contact_num || '', email: doc.email || '' }
+      this.modalErr = ''; this.showModal = true
+    },
+    closeModal() { this.showModal = false },
+    async saveDoctor() {
+      this.saving = true; this.modalErr = ''
+      try {
+        if (this.editMode) {
+          await api.put(`/admin/doctors/${this.editId}`, this.form)
+        } else {
+          await api.post('/admin/doctors', this.form)
+        }
+        this.closeModal()
+        await this.fetchDoctors()
+      } catch (err) {
+        this.modalErr = err.response?.data?.error || 'Operation failed'
+      } finally { this.saving = false }
+    },
+    async verifyDoctor(id) {
+      await api.post(`/admin/doctors/${id}/verify`)
+      await this.fetchDoctors()
+    },
+    async deleteDoctor(id, name) {
+      if (!confirm(`Remove Dr. ${name}? This will delete all related records.`)) return
+      await api.delete(`/admin/doctors/${id}`)
+      await this.fetchDoctors()
+    }
+  }
+}
+</script>
+
+<style scoped>
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.search-row { display: flex; gap: 12px; }
+.action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(13,27,42,.5);
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+.modal-box {
+  background: #fff; border-radius: 12px; padding: 28px; width: 460px;
+  max-width: 95vw; box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
+.modal-box h3 { margin-bottom: 20px; font-size: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+</style>
