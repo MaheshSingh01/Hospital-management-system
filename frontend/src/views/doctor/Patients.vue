@@ -65,3 +65,58 @@
     </div>
   </Layout>
 </template>
+
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'DoctorPatients',
+  components: { Layout },
+  data() {
+    return {
+      patients: [], loading: true,
+      showHistory: false, historyLoading: false,
+      selectedPatient: null, history: [],
+      navItems: [
+        { path: '/doctor/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/doctor/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/doctor/patients',     icon: 'fa-solid fa-users',         label: 'My Patients' },
+        { path: '/doctor/schedule',     icon: 'fa-solid fa-clock',         label: 'Schedule' },
+        { path: '/doctor/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  async created() {
+    const { data } = await api.get('/doctor/patients')
+    this.patients = data; this.loading = false
+  },
+  methods: {
+    async viewHistory(patient) {
+      this.selectedPatient = patient
+      this.history = []; this.historyLoading = true; this.showHistory = true
+      const { data } = await api.get(`/doctor/patients/${patient.id}/history`)
+      this.history = data.history; this.historyLoading = false
+    }
+  }
+}
+</script>
+
+<style scoped>
+.page-header { margin-bottom: 20px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 620px; max-width: 95vw; max-height: 88vh; overflow-y: auto; }
+.modal-box.large { width: 680px; }
+.history-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.modal-sub { color: var(--muted); font-size: 13px; }
+.close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+.history-list { display: flex; flex-direction: column; gap: 12px; }
+.history-item { border: 1.5px solid #e2eaf3; border-radius: 8px; padding: 14px; }
+.history-item.status-completed { border-color: #a7f3d0; }
+.history-item.status-cancelled { border-color: #fecaca; }
+.history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.history-date { font-size: 14px; }
+.treatment-box { background: #f8fbff; border-radius: 6px; padding: 12px; }
+.treat-row { font-size: 13px; margin-bottom: 6px; }
+.treat-label { font-weight: 600; color: var(--teal); margin-right: 6px; }
+.no-treatment { font-size: 13px; color: var(--muted); font-style: italic; }
+</style>
