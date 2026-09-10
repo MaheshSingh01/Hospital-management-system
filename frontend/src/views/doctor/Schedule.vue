@@ -49,3 +49,59 @@
     </div>
   </Layout>
 </template>
+
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'DoctorSchedule',
+  components: { Layout },
+  data() {
+    return {
+      slots: [], loading: true, saving: false, showForm: false,
+      newSlot: { avail_date: '', slot_start: '', slot_end: '' },
+      successMsg: '', errMsg: '',
+      navItems: [
+        { path: '/doctor/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/doctor/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/doctor/patients',     icon: 'fa-solid fa-users',         label: 'My Patients' },
+        { path: '/doctor/schedule',     icon: 'fa-solid fa-clock',         label: 'Schedule' },
+        { path: '/doctor/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  computed: {
+    today() { return new Date().toISOString().split('T')[0] },
+    maxDate() {
+      const d = new Date(); d.setDate(d.getDate() + 7)
+      return d.toISOString().split('T')[0]
+    }
+  },
+  async created() {
+    const { data } = await api.get('/doctor/schedule')
+    this.slots = data; this.loading = false
+  },
+  methods: {
+    async addSlot() {
+      if (!this.newSlot.avail_date || !this.newSlot.slot_start || !this.newSlot.slot_end) {
+        this.errMsg = 'All fields are required'; return
+      }
+      this.saving = true
+      try {
+        await api.post('/doctor/schedule', this.newSlot)
+        this.successMsg = 'Slot added'
+        this.newSlot = { avail_date: '', slot_start: '', slot_end: '' }
+        this.showForm = false
+        const { data } = await api.get('/doctor/schedule')
+        this.slots = data
+      } catch (err) { this.errMsg = err.response?.data?.error || 'Failed to add slot' }
+      finally { this.saving = false }
+    },
+    async removeSlot(id) {
+      await api.delete(`/doctor/schedule/${id}`)
+      this.slots = this.slots.filter(s => s.id !== id)
+      this.successMsg = 'Slot removed'
+    }
+  }
+}
+</script>
