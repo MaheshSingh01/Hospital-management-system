@@ -26,3 +26,60 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'DoctorProfile',
+  components: { Layout },
+  data() {
+    return {
+      profile: {}, loading: true, saving: false, successMsg: '',
+      form: { contact_num: '', home_address: '', email: '', bio: '' },
+      navItems: [
+        { path: '/doctor/dashboard',    icon: 'fa-solid fa-gauge',         label: 'Dashboard' },
+        { path: '/doctor/appointments', icon: 'fa-solid fa-calendar-check',label: 'Appointments' },
+        { path: '/doctor/patients',     icon: 'fa-solid fa-users',         label: 'My Patients' },
+        { path: '/doctor/schedule',     icon: 'fa-solid fa-clock',         label: 'Schedule' },
+        { path: '/doctor/profile',      icon: 'fa-solid fa-circle-user',   label: 'Profile' },
+      ]
+    }
+  },
+  computed: {
+    initials() {
+      return this.profile.full_name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'DR'
+    }
+  },
+  async created() {
+    const { data } = await api.get('/doctor/profile')
+    this.profile = data
+    this.form = { contact_num: data.contact_num || '', home_address: data.home_address || '', email: data.email || '', bio: data.bio || '' }
+    this.loading = false
+  },
+  methods: {
+    async save() {
+      this.saving = true
+      try {
+        await api.put('/doctor/profile', this.form)
+        this.successMsg = 'Profile updated successfully'
+        const { data } = await api.get('/doctor/profile')
+        this.profile = data
+      } finally { this.saving = false }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.page-header { margin-bottom: 24px; }
+.profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+.profile-card { text-align: center; }
+.avatar {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--teal);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 700; margin: 0 auto 14px;
+}
+.profile-card h3 { margin-bottom: 6px; }
+.dept-tag { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+@media (max-width: 700px) { .profile-layout { grid-template-columns: 1fr; } }
+</style>
