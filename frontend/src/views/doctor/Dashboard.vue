@@ -64,3 +64,14 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { margin-bottom: 24px; }
+.page-sub { color: var(--muted); margin-top: 4px; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; max-width: 500px; }
+.stat-card { display: flex; align-items: center; gap: 16px; }
+.stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.stat-icon.blue { background: #dbeafe; }
+.stat-icon.teal { background: #ccfbf1; }
+.stat-num { font-size: 28px; font-weight: 700; color: var(--navy); }
+.stat-label { color: var(--muted); font-size: 13px; }
+</style>
