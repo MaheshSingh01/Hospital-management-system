@@ -56,3 +56,59 @@
     </div>
   </Layout>
 </template>
+
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'AdminPatients',
+  components: { Layout },
+  data() {
+    return {
+      patients: [], searchKw: '', loading: true, saving: false,
+      showModal: false, editId: null,
+      form: { full_name: '', contact_num: '', home_address: '' },
+      errMsg: '', successMsg: '',
+      navItems: [
+        { path: '/admin/dashboard',    icon: 'fa-solid fa-gauge',          label: 'Dashboard' },
+        { path: '/admin/doctors',      icon: 'fa-solid fa-user-doctor',    label: 'Doctors' },
+        { path: '/admin/patients',     icon: 'fa-solid fa-users',          label: 'Patients' },
+        { path: '/admin/appointments', icon: 'fa-solid fa-calendar-check', label: 'Appointments' },
+        { path: '/admin/departments',  icon: 'fa-solid fa-building-columns',label: 'Departments' },
+      ]
+    }
+  },
+  async created() { await this.fetchPatients() },
+  methods: {
+    async fetchPatients() {
+      this.loading = true
+      try {
+        const { data } = await api.get('/admin/patients', { params: { search: this.searchKw } })
+        this.patients = data
+      } catch { this.errMsg = 'Failed to load patients' } finally { this.loading = false }
+    },
+    openEdit(p) {
+      this.editId = p.id
+      this.form = { full_name: p.full_name, contact_num: p.contact_num || '', home_address: p.home_address || '' }
+      this.showModal = true
+    },
+    async savePatient() {
+      this.saving = true
+      try {
+        await api.put(`/admin/patients/${this.editId}`, this.form)
+        this.successMsg = 'Patient updated successfully'
+        this.showModal = false
+        await this.fetchPatients()
+      } catch (err) {
+        this.errMsg = err.response?.data?.error || 'Update failed'
+      } finally { this.saving = false }
+    },
+    async deletePatient(id, name) {
+      if (!confirm(`Remove patient ${name}? This action is permanent.`)) return
+      await api.delete(`/admin/patients/${id}`)
+      this.successMsg = `${name} has been removed`
+      await this.fetchPatients()
+    }
+  }
+}
+</script>
