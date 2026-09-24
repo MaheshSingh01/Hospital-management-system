@@ -105,3 +105,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.slot-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: end; }
+.hint { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+@media (max-width: 700px) { .slot-form { grid-template-columns: 1fr; } }
+</style>
