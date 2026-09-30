@@ -144,3 +144,95 @@
 
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+export default {
+  name: 'AdminAppointments',
+  components: { Layout },
+  data() {
+    return {
+      appointments: [], statusFilter: '', loading: true,
+      successMsg: '', errMsg: '',
+      doctors: [], selectedDoctorId: '',
+      doctorSlots: [],
+      newSlot: { avail_date: '', slot_start: '', slot_end: '' },
+      slotErr: '', slotSuccess: '',
+      showCancelModal: false, cancelTargetId: null, cancelling: false,
+      showRemoveSlotModal: false, removeTargetId: null,
+      navItems: [
+        { path: '/admin/dashboard',    icon: 'fa-solid fa-gauge',          label: 'Dashboard' },
+        { path: '/admin/doctors',      icon: 'fa-solid fa-user-doctor',    label: 'Doctors' },
+        { path: '/admin/patients',     icon: 'fa-solid fa-users',          label: 'Patients' },
+        { path: '/admin/appointments', icon: 'fa-solid fa-calendar-check', label: 'Appointments' },
+        { path: '/admin/departments',  icon: 'fa-solid fa-building-columns',label: 'Departments' },
+      ]
+    }
+  },
+  async created() {
+    const [apptRes, docRes] = await Promise.all([
+      api.get('/admin/appointments'),
+      api.get('/admin/doctors')
+    ])
+    this.appointments = apptRes.data
+    this.doctors = docRes.data
+    this.loading = false
+  },
+  computed: {
+    filtered() {
+      if (!this.statusFilter) return this.appointments
+      return this.appointments.filter(a => a.booking_status === this.statusFilter)
+    }
+  },
+  methods: {
+    openCancelModal(id) {
+      this.cancelTargetId = id
+      this.showCancelModal = true
+    },
+    async confirmCancel() {
+      this.cancelling = true
+      try {
+        await api.post(`/admin/appointments/${this.cancelTargetId}/cancel`)
+        this.successMsg = 'Appointment cancelled successfully'
+        const appt = this.appointments.find(a => a.id === this.cancelTargetId)
+        if (appt) appt.booking_status = 'Cancelled'
+        this.showCancelModal = false
+        setTimeout(() => this.successMsg = '', 3000)
+      } catch (err) {
+        this.errMsg = err.response?.data?.error || 'Failed to cancel appointment'
+        setTimeout(() => this.errMsg = '', 3000)
+      } finally { this.cancelling = false }
+    },
+    async loadDoctorSlots() {
+      if (!this.selectedDoctorId) return
+      const { data } = await api.get(`/admin/doctors/${this.selectedDoctorId}/schedule`)
+      this.doctorSlots = data
+    },
+    async addSlot() {
+      this.slotErr = ''; this.slotSuccess = ''
+      if (!this.newSlot.avail_date || !this.newSlot.slot_start || !this.newSlot.slot_end) {
+        this.slotErr = 'Please fill in all slot fields'
+        return
+      }
+      try {
+        await api.post(`/admin/doctors/${this.selectedDoctorId}/schedule`, this.newSlot)
+        this.slotSuccess = 'Slot added successfully'
+        this.newSlot = { avail_date: '', slot_start: '', slot_end: '' }
+        await this.loadDoctorSlots()
+        setTimeout(() => this.slotSuccess = '', 3000)
+      } catch (err) {
+        this.slotErr = err.response?.data?.error || 'Failed to add slot'
+      }
+    },
+    openRemoveSlotModal(slotId) {
+      this.removeTargetId = slotId
+      this.showRemoveSlotModal = true
+    },
+    async confirmRemoveSlot() {
+      await api.delete(`/admin/schedule/${this.removeTargetId}`)
+      this.doctorSlots = this.doctorSlots.filter(s => s.id !== this.removeTargetId)
+      this.showRemoveSlotModal = false
+    }
+  }
+}
+</script>
