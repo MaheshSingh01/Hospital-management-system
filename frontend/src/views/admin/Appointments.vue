@@ -236,3 +236,23 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { margin-bottom: 20px; }
+.filter-bar { display: flex; align-items: center; gap: 12px; }
+.btn-small {
+  padding: 4px 12px; border-radius: 6px; border: none;
+  cursor: pointer; font-size: 12px; font-weight: 600;
+}
+.btn-danger { background: #e74c3c; color: #fff; }
+.btn-danger:hover { background: #c0392b; }
+.muted-text { color: var(--muted); font-size: 13px; }
+.slot-form { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e8edf2; }
+.slot-form-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 420px; max-width: 95vw; }
+.modal-box h3 { margin-bottom: 4px; }
+.modal-sub { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.confirm-box { text-align: center; }
+.confirm-icon { font-size: 42px; margin-bottom: 12px; }
+</style>
