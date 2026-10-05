@@ -60,3 +60,33 @@
     </div>
   </Layout>
 </template>
+<script>
+import Layout from '../../components/Layout.vue'
+import api from '../../api'
+
+export default {
+  name: 'AdminDashboard',
+  components: { Layout },
+  data() {
+    return {
+      stats: {},
+      loading: true,
+      navItems: [
+        { path: '/admin/dashboard',    icon: 'fa-solid fa-gauge',          label: 'Dashboard' },
+        { path: '/admin/doctors',      icon: 'fa-solid fa-user-doctor',    label: 'Doctors' },
+        { path: '/admin/patients',     icon: 'fa-solid fa-users',          label: 'Patients' },
+        { path: '/admin/appointments', icon: 'fa-solid fa-calendar-check', label: 'Appointments' },
+        { path: '/admin/departments',  icon: 'fa-solid fa-building-columns',label: 'Departments' },
+      ]
+    }
+  },
+  async created() {
+    try {
+      const { data } = await api.get('/admin/dashboard')
+      this.stats = data
+    } finally {
+      this.loading = false
+    }
+  }
+}
+</script>
