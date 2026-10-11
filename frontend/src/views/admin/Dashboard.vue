@@ -90,3 +90,31 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { margin-bottom: 28px; }
+.page-sub { color: var(--muted); margin-top: 4px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.stat-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 22px; display: flex; align-items: center; gap: 16px; }
+.stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex;
+  align-items: center; justify-content: center; font-size: 24px; }
+.stat-icon.blue   { background: #dbeafe; }
+.stat-icon.green  { background: #d1fae5; }
+.stat-icon.teal   { background: #ccfbf1; }
+.stat-icon.orange { background: #fef3c7; }
+.stat-num { font-size: 28px; font-weight: 700; color: var(--navy); }
+.stat-label { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+.action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.action-item {
+  background: var(--light); border-radius: var(--radius); padding: 18px;
+  text-align: center; color: var(--teal); font-weight: 600; font-size: 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: all .2s; border: 1.5px solid transparent;
+}
+.action-item:hover { border-color: var(--teal); background: #fff; box-shadow: var(--shadow); }
+.action-item span { font-size: 28px; }
+
+@media (max-width: 1000px) { .stats-grid, .action-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
