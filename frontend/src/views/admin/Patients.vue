@@ -112,3 +112,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.action-btns { display: flex; gap: 6px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 440px; max-width: 95vw; }
+.modal-box h3 { margin-bottom: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+</style>
