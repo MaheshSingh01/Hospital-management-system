@@ -106,21 +106,8 @@ export default {
 }
 </script>
 <style scoped>
-.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.history-list { display: flex; flex-direction: column; gap: 16px; }
-.history-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-.doctor-name { font-weight: 700; font-size: 16px; }
-.dept-name { color: var(--muted); font-size: 14px; margin-left: 4px; }
-.history-right { display: flex; align-items: center; gap: 10px; }
-.date-chip { background: var(--light); padding: 4px 12px; border-radius: 12px;
-  font-size: 12px; color: var(--muted); border: 1px solid #d4e0ec; }
-.treatment-section { background: #f8fbff; border-radius: 8px; padding: 16px; border: 1px solid #e2eaf3; }
-.treat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.treat-block.full { grid-column: span 2; }
-.treat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
-  color: var(--teal); margin-bottom: 4px; }
-.treat-value { font-size: 14px; color: var(--text); line-height: 1.5; }
-.pending-tag { font-size: 13px; color: var(--muted); font-style: italic; }
-.cancelled-tag { font-size: 13px; color: var(--danger); font-style: italic; }
-@media (max-width: 600px) { .treat-grid { grid-template-columns: 1fr; } .treat-block.full { grid-column: 1; } }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.slot-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: end; }
+.hint { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+@media (max-width: 700px) { .slot-form { grid-template-columns: 1fr; } }
 </style>
