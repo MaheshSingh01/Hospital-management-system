@@ -102,59 +102,20 @@ export default {
 </script>
 <style scoped>
 .page-header { margin-bottom: 20px; }
-.search-row { display: flex; gap: 12px; }
-.doctors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-.doctor-card { display: flex; flex-direction: column; gap: 14px; }
-.doc-top { display: flex; align-items: center; gap: 14px; }
-.doc-avatar {
-  width: 54px; height: 54px; border-radius: 50%; background: var(--teal);
-  color: #fff; display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 18px; flex-shrink: 0;
-}
-.doc-name { font-size: 16px; margin-bottom: 4px; }
-.dept-badge {
-  background: var(--light); color: var(--teal); padding: 3px 10px;
-  border-radius: 12px; font-size: 12px; font-weight: 600;
-}
-.slots-title {
-  font-size: 12px; font-weight: 700; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px;
-}
-.slots-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.slot-btn {
-  background: var(--light); border: 1.5px solid #d4e0ec; border-radius: 8px;
-  padding: 8px 12px; cursor: pointer; font-size: 12px; text-align: center;
-  font-family: 'Outfit', sans-serif; transition: all .18s; line-height: 1.4;
-  color: var(--text); position: relative;
-}
-.slot-btn:hover { border-color: var(--teal); background: var(--teal); color: #fff; }
-.slot-btn.selected { border-color: var(--teal); background: var(--teal); color: #fff; }
-.slot-btn.booked {
-  background: #f0f0f0; border-color: #ccc; color: #aaa;
-  cursor: not-allowed; opacity: 0.7;
-}
-.booked-label {
-  display: block; font-size: 10px; font-weight: 700;
-  color: #e74c3c; margin-top: 2px; text-transform: uppercase;
-}
-.no-slots { font-size: 13px; color: var(--muted); font-style: italic; }
-
-.btn-profile {
-  margin-left: auto; background: var(--light); border: 1.5px solid #c7dff0;
-  color: var(--teal); font-size: 16px; cursor: pointer;
-  padding: 6px 10px; flex-shrink: 0; border-radius: 8px;
-  display: flex; align-items: center; gap: 6px;
-}
-.btn-profile::after { content: 'Profile'; font-size: 12px; font-weight: 600; }
-.btn-profile:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
-.btn-profile:hover { color: var(--navy); }
 .modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
-.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 440px; max-width: 95vw; }
-.profile-modal-top { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-.doc-avatar.large { width: 70px; height: 70px; font-size: 24px; }
-.profile-modal-body { display: flex; flex-direction: column; gap: 12px; }
-.bio-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
-.bio-text { font-size: 14px; line-height: 1.6; color: var(--text); }
-.bio-text.muted { color: var(--muted); font-style: italic; }
-.profile-detail { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.modal-box { background: #fff; border-radius: 12px; padding: 28px; width: 620px; max-width: 95vw; max-height: 88vh; overflow-y: auto; }
+.modal-box.large { width: 680px; }
+.history-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.modal-sub { color: var(--muted); font-size: 13px; }
+.close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+.history-list { display: flex; flex-direction: column; gap: 12px; }
+.history-item { border: 1.5px solid #e2eaf3; border-radius: 8px; padding: 14px; }
+.history-item.status-completed { border-color: #a7f3d0; }
+.history-item.status-cancelled { border-color: #fecaca; }
+.history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.history-date { font-size: 14px; }
+.treatment-box { background: #f8fbff; border-radius: 6px; padding: 12px; }
+.treat-row { font-size: 13px; margin-bottom: 6px; }
+.treat-label { font-weight: 600; color: var(--teal); margin-right: 6px; }
+.no-treatment { font-size: 13px; color: var(--muted); font-style: italic; }
 </style>
